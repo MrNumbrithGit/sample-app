@@ -25,21 +25,23 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/blue", blueHandler)
-	http.HandleFunc("/red", redHandler)
-	http.ListenAndServe(":8080", nil)
+	http.HandleFunc("/blue", blueHandler)  // Serve blue image at "/blue"
+	http.HandleFunc("/red", redHandler)   // Serve red image at "/red"
+	http.ListenAndServe(":8080", nil)     // Start server on port 8080
+}
+
+func blueHandler(w http.ResponseWriter, r *http.Request) {
+	// Create a 100x100 image with blue background
+	img := image.NewRGBA(image.Rect(0, 0, 100, 100))
+	draw.Draw(img, img.Bounds(), &image.Uniform{color.RGBA{0, 0, 255, 255}}, image.ZP, draw.Src)
+	w.Header().Set("Content-Type", "image/png")  // Set response header to image/png
+	png.Encode(w, img)                           // Encode image as PNG and send to client
 }
 
 func redHandler(w http.ResponseWriter, r *http.Request) {
+	// Create a 100x100 image with red background
 	img := image.NewRGBA(image.Rect(0, 0, 100, 100))
 	draw.Draw(img, img.Bounds(), &image.Uniform{color.RGBA{255, 0, 0, 255}}, image.ZP, draw.Src)
-	w.Header().Set("Content-Type", "image/png")
-	png.Encode(w, img)
-}
-
-func redHandler(w http.ResponseWriter, r *http.Request) {
-	img := image.NewRGBA(image.Rect(0, 0, 100, 100))
-	draw.Draw(img, img.Bounds(), &image.Uniform{color.RGBA{255, 0, 0, 255}}, image.ZP, draw.Src)
-	w.Header().Set("Content-Type", "image/png")
-	png.Encode(w, img)
+	w.Header().Set("Content-Type", "image/png")  // Set response header to image/png
+	png.Encode(w, img)                           // Encode image as PNG and send to client
 }
